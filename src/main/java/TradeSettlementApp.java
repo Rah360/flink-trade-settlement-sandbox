@@ -2,7 +2,9 @@ import com.settlement.functions.MockOrderGenerator;
 import com.settlement.functions.MockPaymentGenerator;
 import com.settlement.functions.TradeMatchingFunction;
 import com.settlement.models.BankPayment;
+import com.settlement.models.SettledTrade;
 import com.settlement.models.TradeOrder;
+import com.settlement.sinks.DematAccountSink;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.configuration.Configuration;
@@ -26,11 +28,10 @@ public class TradeSettlementApp {
         DataStream<BankPayment> payments = env.addSource(new MockPaymentGenerator());
         DataStream<TradeOrder> orders = env.addSource(new MockOrderGenerator());
 
-        orders.keyBy(TradeOrder::getOrderId)
+        DataStream<SettledTrade> completedTrades = orders.keyBy(TradeOrder::getOrderId)
                 .connect(payments.keyBy(BankPayment::getOrderId))
-                .process(new TradeMatchingFunction())
-                .print();
-
+                .process(new TradeMatchingFunction());
+        completedTrades.addSink(new DematAccountSink());
         env.execute("Trade Settlement Pipeline Sandbox");
     }
 }
