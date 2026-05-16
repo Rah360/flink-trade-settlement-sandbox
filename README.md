@@ -15,6 +15,8 @@ The project also logs timeout cases when:
 - an order arrives but payment does not arrive in time
 - a payment arrives but the order does not arrive in time
 
+The streams now use event timestamps, watermarks, and event-time timers for timeout handling.
+
 ## Main concepts used
 
 - Flink DataStream API
@@ -23,7 +25,8 @@ The project also logs timeout cases when:
 - connected streams
 - `KeyedCoProcessFunction`
 - `ValueState`
-- processing-time timers
+- watermarks
+- event-time timers
 - custom sink with `RichSinkFunction`
 
 ## Project structure
@@ -38,6 +41,7 @@ The project also logs timeout cases when:
 - This is a sandbox/learning project, not a production system.
 - The app is designed to run locally with Flink's local environment and Web UI.
 - The sink currently prints messages to simulate downstream storage.
+- Event-time behavior is driven by timestamps on mock events and watermark progress.
 
 ## Future improvements
 

@@ -39,7 +39,7 @@ public class TradeMatchingFunction extends KeyedCoProcessFunction<String, TradeO
         }else {
             savedOrderState.update(order);
             long deadline = order.getEventTimestamp() + tenSecondsInMillis;
-            ctx.timerService().registerProcessingTimeTimer(deadline);
+            ctx.timerService().registerEventTimeTimer(deadline);
         }
     }
 
@@ -53,7 +53,7 @@ public class TradeMatchingFunction extends KeyedCoProcessFunction<String, TradeO
             savedPaymentState.update(payment);
 
             long deadline = payment.getEventTimestamp() + tenSecondsInMillis;
-            ctx.timerService().registerProcessingTimeTimer(deadline);
+            ctx.timerService().registerEventTimeTimer(deadline);
         }
     }
 //    a Priority Queue
