@@ -32,6 +32,17 @@
             <artifactId>flink-runtime-web</artifactId>
             <version>1.18.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-kafka</artifactId>
+            <version>3.2.0-1.18</version>
+        </dependency>
+        <!-- We also need Jackson to translate Kafka JSONs into our Java Objects -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version>
+        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

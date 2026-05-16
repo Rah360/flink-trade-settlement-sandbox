@@ -25,6 +25,6 @@ public class DematAccountSink extends RichSinkFunction<SettledTrade> {
     @Override
     public void close() throws Exception {
         // This runs when the server shuts down.
-        System.out.println("🔌 [DATABASE] Closed Demat DB connection.");
+        System.out.println("[DATABASE] Closed Demat DB connection.");
     }
 }
