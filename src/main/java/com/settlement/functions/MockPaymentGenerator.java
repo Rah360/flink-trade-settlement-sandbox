@@ -19,7 +19,7 @@ public class MockPaymentGenerator implements SourceFunction<BankPayment> {
             // 80% chance of SUCCESS, 20% chance of INSUFFICIENT_FUNDS
             String status = random.nextInt(100) < 80 ? "SUCCESS" : "INSUFFICIENT_FUNDS";
 
-            BankPayment payment = new BankPayment(randomId, status);
+            BankPayment payment = new BankPayment(randomId, status,System.currentTimeMillis());
             ctx.collect(payment);
 
             // Emit a new payment every 1 second

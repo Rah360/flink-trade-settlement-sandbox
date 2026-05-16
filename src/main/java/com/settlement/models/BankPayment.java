@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class BankPayment {
     private String orderId;
     private String status;
+    private long eventTimestamp;
     @Override
     public String toString() {
         return "BankPayment{orderId='" + orderId + "', status='" + status + "'}";

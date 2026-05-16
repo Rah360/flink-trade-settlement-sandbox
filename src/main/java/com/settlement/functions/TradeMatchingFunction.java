@@ -13,7 +13,7 @@ import org.apache.flink.configuration.Configuration;
 public class TradeMatchingFunction extends KeyedCoProcessFunction<String, TradeOrder, BankPayment, SettledTrade>{
     private ValueState<TradeOrder> savedOrderState;
     private ValueState<BankPayment> savedPaymentState;
-
+    private long tenSecondsInMillis = 10 * 1000;
     //    who calls it? The TaskManager (the physical server).
     //    when is it called? Exactly once, right after the TaskManager assigns this code to a CPU slot,
     //    but before the data stream is turned on.
@@ -38,8 +38,7 @@ public class TradeMatchingFunction extends KeyedCoProcessFunction<String, TradeO
         savedPaymentState.clear();
         }else {
             savedOrderState.update(order);
-            long tenSecondsInMillis = 10 * 1000;
-            long deadline = ctx.timerService().currentProcessingTime() + tenSecondsInMillis;
+            long deadline = order.getEventTimestamp() + tenSecondsInMillis;
             ctx.timerService().registerProcessingTimeTimer(deadline);
         }
     }
@@ -52,7 +51,8 @@ public class TradeMatchingFunction extends KeyedCoProcessFunction<String, TradeO
             savedOrderState.clear();
         } else {
             savedPaymentState.update(payment);
-            long deadline = ctx.timerService().currentProcessingTime() + (10 * 1000);
+
+            long deadline = payment.getEventTimestamp() + tenSecondsInMillis;
             ctx.timerService().registerProcessingTimeTimer(deadline);
         }
     }
@@ -61,7 +61,7 @@ public class TradeMatchingFunction extends KeyedCoProcessFunction<String, TradeO
     public void onTimer(long timestamp, OnTimerContext ctx, Collector<SettledTrade> out) throws Exception {
         TradeOrder stuckOrder = savedOrderState.value();
         BankPayment stuckPayment = savedPaymentState.value();
-
+        System.out.println("⏰ Logical Watermark Clock hit: " + timestamp);
         if (stuckOrder != null) {
             System.err.println(" TIMEOUT: Order " + stuckOrder.getOrderId() + " expired. Payment never arrived.");
             savedOrderState.clear(); // free the memory!

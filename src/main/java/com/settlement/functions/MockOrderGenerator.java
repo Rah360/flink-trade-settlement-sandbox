@@ -23,7 +23,7 @@ public class MockOrderGenerator implements SourceFunction<TradeOrder> {
             String randomAsset = assets[random.nextInt(assets.length)];
             String randomId = String.valueOf(random.nextInt(20) + 1);
             // Create the order and emit it out the pipe
-            TradeOrder newOrder = new TradeOrder(randomId, randomAsset);
+            TradeOrder newOrder = new TradeOrder(randomId, randomAsset,System.currentTimeMillis());
             ctx.collect(newOrder);
 
             // Wait 2 seconds before sending the next one
